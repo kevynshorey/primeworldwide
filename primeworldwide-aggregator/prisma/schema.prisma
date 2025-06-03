@@ -1,0 +1,38 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id         Int       @id @default(autoincrement())
+  title      String
+  price      String
+  address    String
+  parish     String
+  bedrooms   Int?
+  bathrooms  Int?
+  lotSize    String?
+  agentName  String?
+  agentEmail String?
+  images     String[]  @db.JSON
+  sourceURL  String    @unique
+  scrapedAt  DateTime
+
+  inquiries  Inquiry[]
+}
+
+model Inquiry {
+  id          Int      @id @default(autoincrement())
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  propertyId  Int
+  name        String
+  email       String
+  message     String
+  submittedAt DateTime
+}
